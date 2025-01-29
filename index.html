@@ -4,9 +4,67 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Turnstile Debug</title>
+    <style>
+        /* Full-page centering */
+        html, body {
+            height: 100%;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: Arial, sans-serif;
+            background-color: #121212;
+            color: #f1f1f1;
+            text-align: center;
+        }
+        h1 {
+            color: #ffa500;
+        }
+        .container {
+            background: #1e1e1e;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0px 0px 10px rgba(255, 165, 0, 0.4);
+            max-width: 400px;
+            width: 100%;
+        }
+        input {
+            width: 90%;
+            padding: 8px;
+            margin-top: 10px;
+            border: none;
+            border-radius: 5px;
+            text-align: center;
+        }
+        button {
+            background: #ffa500;
+            border: none;
+            padding: 10px 15px;
+            cursor: pointer;
+            color: #121212;
+            font-weight: bold;
+            border-radius: 5px;
+            margin-top: 10px;
+        }
+        button:hover {
+            background: #ff8700;
+        }
+        #token-container {
+            margin-top: 20px;
+            display: none;
+        }
+        #token-display {
+            background: #292929;
+            padding: 10px;
+            border-radius: 5px;
+            display: inline-block;
+            word-break: break-word;
+            max-width: 90%;
+        }
+    </style>
     <script>
         function loadTurnstile() {
-            const siteKey = prompt("Enter your Turnstile Site Key:");
+            const siteKey = document.getElementById("site-key").value.trim();
             if (!siteKey) {
                 alert("⚠️ Site key is required!");
                 return;
@@ -28,17 +86,32 @@
 
         function onTurnstileSuccess(token) {
             console.log("✅ Turnstile Token:", token);
-            const tokenDisplay = document.getElementById("token-display");
-            tokenDisplay.textContent = `Token: ${token}`;
-            tokenDisplay.style.display = "block";
+            document.getElementById("token-display").textContent = token;
+            document.getElementById("token-container").style.display = "block";
+        }
+
+        function copyToken() {
+            const tokenText = document.getElementById("token-display").textContent;
+            navigator.clipboard.writeText(tokenText).then(() => {
+                alert("✅ Token copied to clipboard!");
+            }).catch(err => {
+                console.error("Failed to copy token:", err);
+            });
         }
     </script>
 </head>
-<body onload="loadTurnstile()">
-    <h1>🔍 Turnstile Debug Tool</h1>
-    <p>Enter your Turnstile **Site Key** when prompted.</p>
-    <div id="turnstile-widget"></div>
-    <p id="token-display" style="font-weight: bold; margin-top: 20px; display: none;"></p>
+<body>
+    <div class="container">
+        <h1>🔍 Turnstile Debug Tool</h1>
+        <p>Enter your Turnstile **Site Key** below:</p>
+        <input type="text" id="site-key" placeholder="Enter Site Key">
+        <button onclick="loadTurnstile()">🔄 Load Turnstile</button>
+        <div id="turnstile-widget"></div>
+        <div id="token-container">
+            <p><strong>Generated Token:</strong></p>
+            <p id="token-display"></p>
+            <button onclick="copyToken()">📋 Copy Token</button>
+        </div>
+    </div>
 </body>
 </html>
-
