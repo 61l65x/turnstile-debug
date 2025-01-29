@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Turnstile Debug</title>
+    <script>
+        function loadTurnstile() {
+            const siteKey = prompt("Enter your Turnstile Site Key:");
+            if (!siteKey) {
+                alert("⚠️ Site key is required!");
+                return;
+            }
+
+            document.getElementById("turnstile-widget").innerHTML = `
+                <div class="cf-turnstile"
+                     data-sitekey="${siteKey}"
+                     data-callback="onTurnstileSuccess">
+                </div>
+            `;
+
+            const script = document.createElement("script");
+            script.src = "https://challenges.cloudflare.com/turnstile/v0/api.js";
+            script.async = true;
+            script.defer = true;
+            document.body.appendChild(script);
+        }
+
+        function onTurnstileSuccess(token) {
+            console.log("✅ Turnstile Token:", token);
+            const tokenDisplay = document.getElementById("token-display");
+            tokenDisplay.textContent = `Token: ${token}`;
+            tokenDisplay.style.display = "block";
+        }
+    </script>
+</head>
+<body onload="loadTurnstile()">
+    <h1>🔍 Turnstile Debug Tool</h1>
+    <p>Enter your Turnstile **Site Key** when prompted.</p>
+    <div id="turnstile-widget"></div>
+    <p id="token-display" style="font-weight: bold; margin-top: 20px; display: none;"></p>
+</body>
+</html>
+
